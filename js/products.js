@@ -370,50 +370,74 @@
   }
 
   // ── FETCH ────────────────────────────────────────────────────────────────
+  async function fetchProducts(url) {
+    const res = await fetch(url + CACHE_BUST, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      cache: "no-cache",
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  }
+
+  function applyProducts(data) {
+    catalog = Array.isArray(data)
+      ? data
+      : Array.isArray(data.productos)
+        ? data.productos
+        : [];
+
+    if (catalog.length === 0) {
+      setStatus("No hay productos disponibles en este momento.", "warn");
+      document.getElementById("products-grid").innerHTML =
+        `<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:3rem 0">
+           Sin productos disponibles. Volvé pronto. 🔄
+         </p>`;
+      return;
+    }
+
+    // Actualizar indicador de stock en footer
+    if (data.updatedAt) {
+      const el = document.getElementById("stock-last-update");
+      if (el) {
+        el.textContent = `Stock actualizado: ${new Date(data.updatedAt).toLocaleString("es-AR", {
+          timeZone: "America/Argentina/Buenos_Aires",
+        })}`;
+      }
+    }
+
+    renderProducts();
+  }
+
   async function loadProducts() {
     setStatus("Cargando catálogo...");
 
     try {
-      const res = await fetch(PRODUCTS_URL + CACHE_BUST, {
-        method: "GET",
-        headers: { Accept: "application/json" },
-        cache: "no-cache",
-      });
-
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-      const data = await res.json();
-
-      catalog = Array.isArray(data)
-        ? data
-        : Array.isArray(data.productos)
-          ? data.productos
-          : [];
-
-      if (catalog.length === 0) {
-        setStatus("No hay productos disponibles en este momento.", "warn");
-        document.getElementById("products-grid").innerHTML =
-          `<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:3rem 0">
-             Sin productos disponibles. Volvé pronto. 🔄
-           </p>`;
-        return;
+      const data = await fetchProducts(PRODUCTS_URL);
+      applyProducts(data);
+      if (catalog.length > 0) {
+        setStatus(`${catalog.length} producto${catalog.length !== 1 ? "s" : ""} disponible${catalog.length !== 1 ? "s" : ""}`);
       }
-
-      // Actualizar indicador de stock en footer
-      if (data.updatedAt) {
-        const el = document.getElementById("stock-last-update");
-        if (el) {
-          el.textContent = `Stock actualizado: ${new Date(data.updatedAt).toLocaleString("es-AR", {
-            timeZone: "America/Argentina/Buenos_Aires",
-          })}`;
-        }
-      }
-
-      renderProducts();
-      setStatus(`${catalog.length} producto${catalog.length !== 1 ? "s" : ""} disponible${catalog.length !== 1 ? "s" : ""}`);
 
     } catch (err) {
       console.error("[Products] Error al cargar catálogo:", err);
+
+      // Si falla el origen en vivo (ej. n8n sin ejecuciones disponibles),
+      // mostramos el catálogo de respaldo local en vez de romper la página,
+      // y seguimos reintentando el origen real en segundo plano.
+      if (PRODUCTS_URL !== "./products.json") {
+        try {
+          const fallback = await fetchProducts("./products.json");
+          applyProducts(fallback);
+          if (catalog.length > 0) {
+            setStatus("Mostrando catálogo guardado (reconectando con el sistema en vivo)...", "warn");
+          }
+          setTimeout(() => loadProducts(), 15000);
+          return;
+        } catch (fallbackErr) {
+          console.error("[Products] Fallback local también falló:", fallbackErr);
+        }
+      }
 
       // Limpiar skeletons y mostrar error
       const grid = document.getElementById("products-grid");

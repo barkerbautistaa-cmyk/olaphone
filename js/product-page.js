@@ -310,15 +310,29 @@
     const id = new URLSearchParams(window.location.search).get("id");
     if (!id) { window.location.href = "index.html#catalogo"; return; }
 
-    try {
-      const res = await fetch(PRODUCTS_URL + CACHE_BUST, {
+    async function fetchCatalog(url) {
+      const res = await fetch(url + CACHE_BUST, {
         method: "GET",
         headers: { Accept: "application/json" },
         cache: "no-cache",
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      const catalog = Array.isArray(data) ? data : (data.productos || []);
+      return Array.isArray(data) ? data : (data.productos || []);
+    }
+
+    try {
+      let catalog;
+      try {
+        catalog = await fetchCatalog(PRODUCTS_URL);
+      } catch (err) {
+        // Si falla el origen en vivo (ej. n8n sin ejecuciones disponibles),
+        // usamos el catálogo de respaldo local en vez de romper la página.
+        if (PRODUCTS_URL === "./products.json") throw err;
+        console.error("[Producto] Origen en vivo falló, usando respaldo local:", err);
+        catalog = await fetchCatalog("./products.json");
+      }
+
       const product = catalog.find(x => String(x.id).trim() === String(id).trim());
 
       if (!product) { window.location.href = "index.html#catalogo"; return; }
