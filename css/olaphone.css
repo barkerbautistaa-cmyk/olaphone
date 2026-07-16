@@ -1804,13 +1804,25 @@ ul {
 }
 
 .footer-copy,
-.footer-stock-update {
+.footer-stock-update,
+.footer-credit {
   font-size: 0.78rem;
   color: var(--text-muted);
 }
 
 .footer-stock-update {
   color: rgba(233, 30, 140, 0.5);
+}
+
+.footer-credit-link {
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s ease;
+}
+
+.footer-credit-link:hover {
+  color: var(--accent, #e91e8c);
 }
 
 /* ── WHATSAPP FLOAT BUTTON ─────────────────────────────────────── */
