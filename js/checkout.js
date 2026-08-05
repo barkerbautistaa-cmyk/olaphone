@@ -15,7 +15,7 @@
   // ── CONFIGURACIÓN ────────────────────────────────────────────────────────
   const CART_WEBHOOK_URL = window.CART_WEBHOOK_URL || "/api/webhook/cart";
   const WEBHOOK_SECRET   = window.WEBHOOK_SECRET   || "";
-  const OWNER_PHONE      = window.OWNER_PHONE      || "542284641652";
+  const OWNER_PHONE      = window.OWNER_PHONE      || "542284582099";
 
   // ── UTILIDADES ───────────────────────────────────────────────────────────
   function fmt(n) {
@@ -34,7 +34,7 @@
 
   /**
    * Normaliza el teléfono al formato E.164 para Argentina (sin +).
-   * Acepta: "1112345678", "01112345678", "2284641652", etc.
+   * Acepta: "1112345678", "01112345678", "2284582099", etc.
    * Devuelve: "549XXXXXXXXXX"
    */
   function normalizeTelefono(raw) {
@@ -96,7 +96,7 @@
     if (!telefono)
       errors.push("El número de WhatsApp es obligatorio.");
     else if (!/^\d{6,15}$/.test(telefono.replace(/\s/g, "")))
-      errors.push("El teléfono debe tener entre 6 y 15 dígitos. Ej: 2284641652");
+      errors.push("El teléfono debe tener entre 6 y 15 dígitos. Ej: 2284582099");
 
     if (!window.Cart || window.Cart.isEmpty)
       errors.push("Tu carrito está vacío. Agregá productos antes de finalizar.");

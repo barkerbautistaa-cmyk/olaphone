@@ -134,7 +134,7 @@
           <p class="pm-meta">Retiro en el local de Olavarría o envío a todo el país. Garantía incluida.</p>
 
           <p class="pm-hint">Consultas por este producto:
-            <a href="https://wa.me/${window.OWNER_PHONE || "542284641652"}?text=${encodeURIComponent(`Hola OlaPhone! Quiero consultar por: ${p.nombre}`)}"
+            <a href="https://wa.me/${window.OWNER_PHONE || "542284582099"}?text=${encodeURIComponent(`Hola OlaPhone! Quiero consultar por: ${p.nombre}`)}"
                target="_blank" rel="noopener">escribinos por WhatsApp</a>
           </p>
         </div>

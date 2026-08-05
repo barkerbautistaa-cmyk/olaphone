@@ -23,7 +23,7 @@
 
   if (!floatBtn || !overlay || !form) return;
 
-  const OWNER_PHONE       = window.OWNER_PHONE      || "542284641652";
+  const OWNER_PHONE       = window.OWNER_PHONE      || "542284582099";
   const LEAD_CAPTURE_URL  = window.LEAD_CAPTURE_URL || "/api/lead/capture";
 
   // ── ABRIR / CERRAR POPUP ────────────────────────────────────────────────────

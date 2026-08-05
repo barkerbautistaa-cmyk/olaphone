@@ -322,7 +322,7 @@
             Diagnóstico sin cargo. Escribinos y te asesoramos al toque.
           </p>
           <a
-            href="https://wa.me/542284641652?text=Hola%20OlaPhone!%20Necesito%20servicio%20t%C3%A9cnico."
+            href="https://wa.me/542284582099?text=Hola%20OlaPhone!%20Necesito%20servicio%20t%C3%A9cnico."
             target="_blank" rel="noopener noreferrer"
             class="btn-service service-cta-btn"
             aria-label="Contactar servicio técnico por WhatsApp"
